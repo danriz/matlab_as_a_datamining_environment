@@ -1,0 +1,12 @@
+CustomerID;Name;Surname;Age;Income
+1001;SAFÝYE;ÞAHAP;34;low    
+1002;ÞADAN;ÖZDEMÝR;42;high      
+1003;ÞEREF;KARABIYIK;26;high    
+1004;ÞADUMAN;KARATAÞ;30;medium 
+1005;TAÞKIN;CEYHAN;43;veryhigh      
+1006;TÜLÝN;ÇIKIM;23;high        
+1007;TUÐBA;EKMEKÇÝ;36;medium      
+1008;TUNCER;YUSUF;27;medium
+1001;SAFÝYE;ÞAHAP;34;low    
+1012;SAFÝYE;ssss;34;veryhigh
+1014;SAFÝYE;vedat;34;low    

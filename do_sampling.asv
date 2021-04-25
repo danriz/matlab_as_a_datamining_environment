@@ -1,0 +1,168 @@
+function do_sampling()
+
+try
+    
+
+    global samplehistory
+    global sample_row
+    global sample_col
+    
+    
+    
+    global sample_select    
+
+sample_select
+
+newclm_object = findobj(gcbf,'Tag','popupmenu2');
+clm_newvar = get(newclm_object,'Value');
+clmval=clm_newvar
+
+newclmstr_object = findobj(gcbf,'Tag','popupmenu2');
+clm_newstr = get(newclmstr_object,'String');
+clmstr=clm_newstr
+
+the_clmvar=clm_newstr(clmval,:)
+
+the_clmvar=deblank(the_clmvar)
+
+newper_object = findobj(gcbf,'Tag','edit2');
+per_newstr = get(newper_object,'String');
+perstr=per_newstr
+
+newtyp_object = findobj(gcbf,'Tag','popupmenu3');
+typ_newvar = get(newtyp_object,'Value');
+typval=typ_newvar
+
+if((typval==1)||(typval==2))
+    f_res=0
+    gr=num2str(f_res)
+else
+    f_res=1
+    gr=num2str(f_res)
+end
+
+
+newpref_object = findobj(gcbf,'Tag','edit3');
+pref_newstr = get(newpref_object,'String');
+prefstr=pref_newstr
+
+
+newint1_object = findobj(gcbf,'Tag','edit4');
+int1_newstr = get(newint1_object,'String');
+intt1str=int1_newstr
+
+
+newint2_object = findobj(gcbf,'Tag','edit5');
+int2_newstr = get(newint2_object,'String');
+intt2str=int2_newstr
+
+
+newmdl_object = findobj(gcbf,'Tag','edit6');
+mdl_newstr = get(newmdl_object,'String');
+mdlstr=mdl_newstr
+
+
+newcat_object = findobj(gcbf,'Tag','edit7');
+cat_newstr = get(newcat_object,'String');
+catstr=cat_newstr
+
+end
+
+global samplecount
+global slistcounter
+
+
+[hz,hy]=size(slistcounter)
+if(hz==0)
+    slistcounter=1
+end
+
+[hn,ht]=size(samplecount)
+if(hn==0)
+    samplecount=1
+end
+
+slis=num2str(slistcounter)
+liststr=['list',slis]
+
+sampe_str=num2str(samplecount)
+
+temp_str=[the_clmvar,sampe_str]
+
+def_str=['global ',temp_str]
+evalin('base',def_str)
+
+exe_str=[temp_str,'=',the_clmvar]
+evalin('base',exe_str)
+samplecount=samplecount+1
+
+
+cre_str=[liststr,'=crelist(''',temp_str,''')']
+
+evalin('base',cre_str)
+slistcounter=slistcounter+1
+
+if(sample_select==0)
+
+    run_str=['sample(',liststr,',',perstr,',',gr,',''',prefstr,''',[',intt1str,',',intt2str,'])']
+    myres=evalin('base',run_str)
+    
+    begin_str=['Variable Name:']
+    
+    [ov,ob]=size(begin_str)
+    
+    for bp=1:ob
+    global samplehistory
+    global sample_row
+    global sample_col
+
+    samplehistory(sample_row,sample_col)=begin_str(1,bp)
+    sample_col=sample_col+1
+    end
+    
+    [eb,hr]=size(the_clmvar)
+    for nbf=1:hr
+       samplehistory(sample_row,sample_col)=the_clmvar(nbf)
+       sample_col=sample_col+1
+    end
+    
+    
+    samp_str=[' Sample:']
+    
+    [wp,wo]=size(samp_str)
+    for uyn=1:wo
+    samplehistory(sample_row,sample_col)=samp_str(uyn)
+    sample_col=sample_col+1
+    end
+    
+    [ap,ay]=size(myres)
+    for lv=1:ay
+        
+        temp_order=myres(lv)
+        str_order=num2str(temp_order)
+        runn_str=[temp_str,'(',str_order,')']
+        add_to_hist=evalin('base',runn_str)
+        if(isnumeric(add_to_hist))
+            add_to_hist=num2str(add_to_hist)
+            
+        end
+        
+        [eb,el]=size(add_to_hist)
+        
+        for spf=1:el
+         samplehistory(sample_row,sample_col)=add_to_hist(spf)
+         sample_col=sample_col+1
+         
+        end
+        %temp_str(temp_order)
+        
+    end
+    
+elseif (sample_select==1)
+    
+    run_str=['stfsample(',liststr,',',perstr,',',gr,',''',prefstr,''',',temp_str,')']
+     myres=evalin('base',run_str)
+elseif(sample_select==2)
+        run_str=['restsample(',liststr,',',perstr,',',gr,',''',prefstr,''')']
+        evalin('base',run_str)
+end

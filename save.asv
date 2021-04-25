@@ -1,0 +1,21 @@
+function save
+function saveMiningResults
+
+try
+   [fileName, pathName] = uiputfile('*.mat','Save  File');
+  	%If file has been selected or entered
+	if fileName ~= 0
+      fileName = cat(2,pathName,fileName);
+      
+      table_object= findobj(gcbf,'Tag','activex1');
+      table=get(table_object,'UserData');
+      
+    
+      
+		%save variables to file specified
+		save(fileName,'table');
+		msgbox('Mining Results saved'); 
+   end
+catch
+   msgbox('Error when saving file.');
+end

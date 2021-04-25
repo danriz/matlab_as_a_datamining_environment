@@ -1,0 +1,39 @@
+function varlist = getodbc(source,username,password,sqlquery,rowlimit)
+
+setdbprefs('DataReturnFormat','cellarray');
+conn=database(source,username,password);
+
+curs=exec(conn,sqlquery);
+curs=fetch(curs,1);
+
+colnames=strrep(columnnames(curs),'''','');
+colnum=length(findstr(colnames,','))+1;
+
+varlist='';
+for k=1:colnum
+    [varname colnames]=strtok(colnames,',');
+    sqlnew = strrep(sqlquery, '*', ['"',varname,'"']);
+        
+    curs=exec(conn,sqlnew);
+    if nargin==4
+        curs=fetch(curs);
+    elseif nargin==5
+        curs=fetch(curs,rowlimit);
+    end
+
+    varname=genvarname(varname,who('global'));
+    eval([varname,'=curs.data(:,1);']);
+    
+    if strcmp(class(curs.data{1,1}),'char')==1
+        eval([varname,'=char(',varname,');']);
+    elseif strcmp(class(curs.data{1,1}),'double')==1
+        eval([varname,'=[',varname,'{:}]'';']);
+    elseif strcmp(class(curs.data{1,1}),'logical')==1
+        eval([varname,'=[',varname,'{:}]'';']);
+    end
+    
+    varlist = strvcat(varlist, varname);
+    evalin('base',['global ',varname]);
+    eval(['assignin(''base'',''',varname,''',',varname,');']);
+    eval(['clear ' varname]);
+end
